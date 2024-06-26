@@ -1,0 +1,8 @@
+---
+- name: join the cluster
+  command: "{{ join_cmd }}"
+  register: out
+
+- name: print stdout
+  debug:
+    var: out

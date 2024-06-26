@@ -1,0 +1,4 @@
+---
+- name: Hello from databases
+  ansible.builtin.debug:
+    msg: Hello from all databases

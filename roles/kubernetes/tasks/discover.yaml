@@ -1,0 +1,35 @@
+---
+- name: check the cluster membership
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: st
+  when: node == "master"
+
+- name: register master initialized status
+  set_fact:
+    cluster: "initialized"
+  when:
+    - node == "master"
+    - st.stat.exists
+    - reset != true
+
+- name: check the cluster membership
+  stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: st
+  when: node == "worker"
+
+- name: register workers initialized status
+  set_fact:
+    cluster: "joined"
+  when:
+    - node == "worker"
+    - st.stat.exists
+
+- name: get the IP address of the node
+  shell: ifconfig wlan0 | grep 'inet ' | awk '{print $2}'
+  register: ipaddress_out
+
+- name: set the node_ip
+  set_fact:
+    node_ip: "{{ ipaddress_out.stdout }}"

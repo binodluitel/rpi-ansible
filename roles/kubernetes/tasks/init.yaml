@@ -1,0 +1,47 @@
+---
+- name: pull container images first
+  command: kubeadm config images pull
+
+- name: generate a token before init
+  command: kubeadm token generate
+  register: init_token
+
+- name: set token fact
+  set_fact:
+    init_token: "{{ init_token.stdout }}"
+
+- name: init the cluster
+  command: kubeadm init --token {{ init_token }} --apiserver-advertise-address={{ node_ip }} {{ cni_init_extra[cni] }} --ignore-preflight-errors=Mem,cri
+  register: init_out
+
+- debug: var=init_out
+
+- name: ensure the .kube dir exists for root
+  file:
+    path: /root/.kube
+    state: directory
+    owner: root
+    group: root
+
+- name: copy in the kubernetes config to the root user
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    remote_src: yes
+    owner: root
+    group: root
+
+- name: ensure the .kube dir exists for bluitel
+  file:
+    path: /home/bluitel/.kube
+    state: directory
+    owner: bluitel
+    group: bluitel
+
+- name: copy in the kubernetes config to the bluitel user
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/bluitel/.kube/config
+    remote_src: yes
+    owner: bluitel
+    group: bluitel

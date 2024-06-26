@@ -1,0 +1,25 @@
+---
+- name: Download and install Flannel
+  ansible.builtin.get_url:
+    url: https://github.com/flannel-io/flannel/releases/download/{{ flannel_version }}/flanneld-arm64
+    dest: /usr/local/bin/flanneld
+    owner: root
+    group: root
+    mode: '0755'
+  register: flannel_download
+
+
+- name: Create Flannel networks directory
+  ansible.builtin.file:
+    path: /var/lib/k8s/flannel/networks
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+    mode: '0755'
+  register: flannel_directory
+
+- name: Reboot after configuring Flannel
+  ansible.builtin.reboot:
+    msg: "Rebooting to apply Flannel configuration"
+  when: flannel_download.changed or flannel_directory.changed

@@ -1,0 +1,5 @@
+---
+- hosts: workers
+  roles:
+    - role: workers
+      tags: workers

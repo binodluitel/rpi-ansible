@@ -1,0 +1,4 @@
+---
+- name: Hello from masters
+  ansible.builtin.debug:
+    msg: Hello from all masters

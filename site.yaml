@@ -1,0 +1,21 @@
+---
+- import_playbook: masters.yaml
+- import_playbook: workers.yaml
+- import_playbook: databases.yaml
+- hosts: all
+  roles:
+    - common
+  tags:
+    - common
+
+- hosts: all
+  roles:
+    - containerd
+  tags:
+    - supporting
+
+- hosts: all
+  roles:
+    - kubernetes
+  tags:
+    - kubernetes

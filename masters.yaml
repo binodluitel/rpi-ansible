@@ -1,0 +1,8 @@
+---
+- hosts: masters
+  roles:
+    - role: common
+    - role: containerd
+    - role: network
+    - role: kubernetes
+    - role: masters

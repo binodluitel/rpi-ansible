@@ -1,0 +1,32 @@
+all:
+  vars:
+    ansible_connection: ssh
+    ansible_user: bluitel
+    ansible_ssh_private_key_file: ~/.ssh/id_ed25519
+    ansible_become: true
+    ansible_become_user: root
+    ansible_python_interpreter: /usr/bin/python3
+  hosts:
+    rpimaster:
+      ansible_host: rpimaster
+    rpinode1:
+      ansible_host: rpinode1
+    rpinode2:
+      ansible_host: rpinode2
+  children:
+    masters:
+      hosts:
+        rpimaster
+      vars:
+        node: master
+    workers:
+      hosts:
+        rpinode1
+        rpinode2
+      vars:
+        node: worker
+    databases:
+      hosts:
+        rpinode3
+      vars:
+        node: database

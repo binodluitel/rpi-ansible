@@ -1,0 +1,68 @@
+---
+- name: install k8s
+  include_tasks: install.yaml
+  tags:
+    - install
+    - upgrade
+
+- name: install the CNI (Container Network Interface) binary
+  include_tasks: "cni/{{ cni }}.bin.yaml"
+  when: cni is defined and cni != ''
+
+- name: discover node status
+  include_tasks: discover.yaml
+
+- debug: var=node
+- debug: var=cluster
+
+- name: create the cluster
+  include_tasks: init.yaml
+  when:
+    - node == "master"
+    - cluster != "initialized"
+  tags:
+    - init
+
+- name: enable the CNI (Container Network Interface)
+  include_tasks: "cni/{{ cni }}.ds.yaml"
+  when:
+    - cni is defined and cni != ''
+    - node == "master"
+
+- debug: var=node_ip
+- debug:
+    var: master_ip
+  when:
+    - node == "worker"
+- debug: var=token
+
+- name: generate short-lived join token
+  include_tasks: join_token.yaml
+  when:
+    - node == "master"
+
+- name: set token from master node
+  set_fact:
+    join_cmd: "{{ hostvars['node00']['join_cmd'] }}"
+  when:
+    - node == "worker"
+
+- name: join the cluster
+  include_tasks: join.yaml
+  when:
+    - node == "worker"
+    - cluster != "joined"
+    - join_cmd is defined and join_cmd != ""
+  tags:
+    - join
+
+- name: discover node status again once everyone has joined
+  include_tasks: discover.yaml
+
+- name: show cluster status
+  shell: kubectl get nodes
+  register: nodes_out
+  when:
+    - node == "master"
+
+- debug: var=nodes_out

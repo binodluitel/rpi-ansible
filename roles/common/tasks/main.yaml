@@ -1,0 +1,29 @@
+---
+- name: Ping my hosts
+  ansible.builtin.ping:
+
+- name: Update apt-cache and do dist upgrade
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
+    upgrade: dist
+
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_required_file
+
+- name: Reboot if required
+  ansible.builtin.reboot:
+  when: reboot_required_file.stat.exists == true
+
+- name: Install common packages
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+
+- name: Prepare by configuring OS
+  include_tasks: configure.os.yaml
+  tags:
+    - install

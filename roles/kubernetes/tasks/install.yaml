@@ -1,0 +1,56 @@
+---
+# Following https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+- name: Install kubernetes required packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "apt-transport-https"
+    - "ca-certificates"
+    - "curl"
+
+- name: add in k8s apt repo key
+  ansible.builtin.apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+
+- name: prepare k8s apt keyring
+  ansible.builtin.file:
+    path: "{{ kube_apt_keyring | dirname }}"
+    state: directory
+    mode: 0755
+
+- name: get K8s apt key
+  ansible.builtin.get_url:
+    url: "https://pkgs.k8s.io/core:/{{ kube_apt_release }}:/v{{ kube_version }}/deb/Release.key"
+    dest: "{{ kube_apt_keyring }}"
+    mode: '0644'
+    force: true
+
+- name: add in k8s apt repo
+  ansible.builtin.apt_repository:
+    repo: "{{ kube_apt_repo }}"
+    filename: pkgs_k8s_io
+    state: present
+    update_cache: true
+
+- name: install k8s packages
+  ansible.builtin.apt:
+    name: "{{ item }}={{ package_versions[item] }}"
+    state: present
+    force: yes
+  with_items: "{{ k8s_packages }}"
+
+- name: pin k8s packages
+  ansible.builtin.copy:
+    dest: "/etc/apt/preferences.d/{{ item }}"
+    content: |
+      Package: {{ item }}
+      Pin: version {{ package_versions[item] }}
+      Pin-Priority: 1002
+  with_items: "{{ k8s_packages }}"
+
+# Something to run if kublet goes kaput
+# - name: strace kubectl version
+#   ansible.builtin.shell: strace -eopenat kubectl version
+#   register: strace_out
+#   when: swap_out.stdout != "1"

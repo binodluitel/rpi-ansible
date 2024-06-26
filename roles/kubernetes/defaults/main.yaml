@@ -1,0 +1,29 @@
+---
+kube_version: "1.28"
+kube_app_version: "1.28.8-1.1" # apt list -a kubeadm | awk '{print $2}' | tail -n 2
+kube_apt_release: "stable"
+kube_apt_keyring: "/etc/apt/keyrings/kubernetes-apt-keyring.asc"
+kube_apt_repo: "deb [signed-by={{ kube_apt_keyring }}] https://pkgs.k8s.io/core:/{{ kube_apt_release }}:/v{{ kube_version }}/deb/ /"
+
+k8s_packages:
+- "kubeadm"
+- "kubectl"
+- "kubelet"
+
+package_versions:
+  kubeadm: "{{ kube_app_version }}"
+  kubectl: "{{ kube_app_version }}"
+  kubelet: "{{ kube_app_version }}"
+
+reset: false
+cluster: ""
+
+master_port: 6443
+
+pod_network_cidr: "10.244.0.0/16"
+
+cni: "flannel"
+flannel_version: "v0.24.4"
+
+cni_init_extra:
+  flannel: "--pod-network-cidr={{ pod_network_cidr }}"
