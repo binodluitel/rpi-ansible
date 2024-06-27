@@ -1,4 +1,5 @@
 ---
-- name: Hello from databases
+- name: Configure databases
   ansible.builtin.debug:
-    msg: Hello from all databases
+    msg: Configuring all databases nodes
+  tags: databases

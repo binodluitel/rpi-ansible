@@ -1,5 +1,7 @@
 ---
 - hosts: workers
   roles:
-    - role: workers
-      tags: workers
+    - role: common
+    - role: containerd
+    - role: network
+    - role: kubernetes

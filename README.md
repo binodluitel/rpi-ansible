@@ -10,6 +10,12 @@ The directory structure follows the alternative directory layout described in [a
 ansible all -i ./inventories --list-hosts
 ```
 
+### List all available tags
+
+```bash
+ansible-playbook -i ./inventories/rpis ./site.yaml --list-tags
+```
+
 ### Ping host(s) - master
 
 ```bash

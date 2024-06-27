@@ -2,4 +2,3 @@
 - hosts: databases
   roles:
     - role: databases
-      tags: databases

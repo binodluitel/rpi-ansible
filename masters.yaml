@@ -5,4 +5,3 @@
     - role: containerd
     - role: network
     - role: kubernetes
-    - role: masters

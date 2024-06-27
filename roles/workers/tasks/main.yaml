@@ -1,5 +1,0 @@
----
-- name: Hello from workers
-  ansible.builtin.debug:
-    msg: Hello from all workers
-
