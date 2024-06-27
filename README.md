@@ -1,4 +1,4 @@
-# Ansible Setup
+# Raspberry PI Ansible Setup
 
 The directory structure follows the alternative directory layout described in [ansible tips and tricks sample setup](https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html#alternative-directory-layout).
 
@@ -31,6 +31,9 @@ The script hasn't been tested on any other Raspberry Pi models.
 
 1. Install Raspberry Pi OS on the SD card.
 2. Make sure to enable SSH and set up the network.
+3. Update `inventory.yaml` file in `./inventories/rpis`:
+    - Add the the Raspberry Pi hosts.
+    - Update `ansible_user` and `ansible_ssh_private_key_file` with the correct values.
 
 ### Deploy to Master node
 
