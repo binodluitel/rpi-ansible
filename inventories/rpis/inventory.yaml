@@ -16,17 +16,17 @@ all:
   children:
     masters:
       hosts:
-        rpimaster
+        rpimaster:
       vars:
         node: master
     workers:
       hosts:
-        rpinode1
-        rpinode2
+        rpinode1:
+        rpinode2:
       vars:
         node: worker
     databases:
       hosts:
-        rpinode3
+        rpinode3:
       vars:
         node: database

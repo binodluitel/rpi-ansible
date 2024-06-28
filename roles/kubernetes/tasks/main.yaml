@@ -36,14 +36,12 @@
     - node == "worker"
 - debug: var=token
 
-- name: generate short-lived join token
+- name: generate short-lived join token from one of the master nodes
   include_tasks: join_token.yaml
-  when:
-    - node == "master"
 
 - name: set token from master node
   set_fact:
-    join_cmd: "{{ hostvars['node00']['join_cmd'] }}"
+    join_cmd: "{{ join_cmd }}"
   when:
     - node == "worker"
 

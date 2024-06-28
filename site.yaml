@@ -10,6 +10,12 @@
 
 - hosts: all
   roles:
+    - network
+  tags:
+    - network
+
+- hosts: all
+  roles:
     - containerd
   tags:
     - supporting

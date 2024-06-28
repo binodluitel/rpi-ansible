@@ -1,8 +1,11 @@
 ---
 - name: generate a new join command expiring in 1 hour
   shell: kubeadm token create --print-join-command --ttl 1h
-  register: join_cmd_out
+  delegate_to: "{{ groups['masters'][0] }}"
+  register: join_command
+
+# - debug: var=join_command
 
 - name: set the current join cmd
   set_fact:
-    join_cmd: "{{ join_cmd_out.stdout }}"
+    join_cmd: "{{ join_command.stdout_lines[0] }}"
