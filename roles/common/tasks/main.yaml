@@ -9,7 +9,7 @@
     cache_valid_time: 86400
     upgrade: dist
 
-- name: Check if reboot required
+- name: Check if reboot is required
   stat:
     path: /var/run/reboot-required
   register: reboot_required_file
